@@ -61,12 +61,12 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-40">
+    <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end">
       {open && (
         <div
           role="dialog"
           aria-label="Housingkind assistant"
-          className="mb-3 flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-mist-200 bg-white shadow-soft"
+          className="mb-3 flex h-[min(28rem,calc(100vh-8rem))] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-mist-200 bg-white shadow-soft"
         >
           <div className="flex items-center justify-between border-b border-mist-100 bg-harbor-700 px-4 py-3 text-white">
             <p className="font-display text-sm font-semibold">Housingkind Assistant</p>
@@ -127,28 +127,36 @@ export default function ChatWidget() {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-label={open ? 'Close Housingkind assistant' : 'Open Housingkind assistant'}
-        className="ml-auto flex h-14 w-14 items-center justify-center rounded-full bg-clay-400 text-ink-900 shadow-soft transition-transform hover:scale-105 hover:bg-clay-500"
-      >
-        {open ? (
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M4 4l12 12M16 4 4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          </svg>
-        ) : (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M4 5h16v10H8l-4 4V5Z"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinejoin="round"
-            />
-          </svg>
+      <div className="relative">
+        {!open && (
+          <span
+            className="pointer-events-none absolute inset-0 animate-ping rounded-full bg-clay-400 opacity-60"
+            aria-hidden="true"
+          />
         )}
-      </button>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label={open ? 'Close Housingkind assistant' : 'Open Housingkind assistant'}
+          className="relative flex h-16 w-16 items-center justify-center rounded-full bg-clay-400 text-ink-900 shadow-[0_8px_24px_-4px_rgba(230,118,53,0.55)] ring-4 ring-white transition-transform hover:scale-105 hover:bg-clay-500"
+        >
+          {open ? (
+            <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4 4l12 12M16 4 4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 5h16v10H8l-4 4V5Z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   )
 }
