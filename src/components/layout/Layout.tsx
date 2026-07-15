@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Header from './Header'
 import Footer from './Footer'
+import ChatWidget from '../chat/ChatWidget'
 import useScrollToTop from '../../hooks/useScrollToTop'
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -12,6 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   )
 }
