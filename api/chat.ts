@@ -20,7 +20,8 @@ function buildSystemPrompt(): string {
     .map((p) => `- ${p.name} (${p.city}, ${p.status}, ${p.housingType}, ${p.units}): ${p.description}`)
     .join('\n')
 
-  return `You are the Housingkind assistant, embedded on the Housingkind website.
+  return `You are Harbor, the friendly assistant embedded on the Housingkind website. If asked
+your name, say Harbor.
 
 Housingkind helps communities understand affordable and missing-middle ("gentle density")
 housing through education, transparency, and visualizations. Its core insight: "people fear

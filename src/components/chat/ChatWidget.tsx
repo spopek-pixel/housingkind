@@ -5,7 +5,7 @@ type Message = { role: 'user' | 'assistant'; content: string }
 const GREETING: Message = {
   role: 'assistant',
   content:
-    "Hi! I'm the Housingkind assistant. Ask me about gentle density, housing terms, a specific project, or how to find your way around the site.",
+    "Hi, I'm Harbor. Ask me about gentle density, housing terms, a specific project, or how to find your way around the site.",
 }
 
 export default function ChatWidget() {
@@ -14,12 +14,18 @@ export default function ChatWidget() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showPulse, setShowPulse] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (open) inputRef.current?.focus()
   }, [open])
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPulse(false), 4000)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -65,11 +71,14 @@ export default function ChatWidget() {
       {open && (
         <div
           role="dialog"
-          aria-label="Housingkind assistant"
+          aria-label="Harbor, the Housingkind assistant"
           className="mb-3 flex h-[min(28rem,calc(100vh-8rem))] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-mist-200 bg-white shadow-soft"
         >
           <div className="flex items-center justify-between border-b border-mist-100 bg-harbor-700 px-4 py-3 text-white">
-            <p className="font-display text-sm font-semibold">Housingkind Assistant</p>
+            <div>
+              <p className="font-display text-sm font-semibold">Harbor</p>
+              <p className="text-xs text-harbor-100/80">Housingkind's assistant</p>
+            </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -128,7 +137,7 @@ export default function ChatWidget() {
       )}
 
       <div className="relative">
-        {!open && (
+        {!open && showPulse && (
           <span
             className="pointer-events-none absolute inset-0 animate-ping rounded-full bg-clay-400 opacity-60"
             aria-hidden="true"
@@ -136,9 +145,12 @@ export default function ChatWidget() {
         )}
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => {
+            setOpen((v) => !v)
+            setShowPulse(false)
+          }}
           aria-expanded={open}
-          aria-label={open ? 'Close Housingkind assistant' : 'Open Housingkind assistant'}
+          aria-label={open ? 'Close Harbor, the Housingkind assistant' : 'Open Harbor, the Housingkind assistant'}
           className="relative flex h-16 w-16 items-center justify-center rounded-full bg-clay-400 text-ink-900 shadow-[0_8px_24px_-4px_rgba(230,118,53,0.55)] ring-4 ring-white transition-transform hover:scale-105 hover:bg-clay-500"
         >
           {open ? (
