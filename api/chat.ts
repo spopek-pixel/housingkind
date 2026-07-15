@@ -1,14 +1,90 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import OpenAI from 'openai'
-import { mythsAndFacts } from '../src/data/myths'
-import { glossary } from '../src/data/glossary'
-import { faqs } from '../src/data/faq'
-import { projectsSummary } from '../src/data/projectsSummary'
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
 const MAX_MESSAGES = 20
 const MAX_MESSAGE_LENGTH = 2000
+
+// Duplicated (not imported) from src/data/*.ts on purpose: Vercel's serverless
+// function bundler for this (non-Next.js) Vite project doesn't reliably trace
+// relative imports that reach outside the api/ directory, which caused
+// ERR_MODULE_NOT_FOUND at runtime. Keeping this self-contained avoids that
+// entirely. If the site copy changes, mirror the change here too.
+
+const mythsAndFacts = [
+  {
+    myth: 'Affordable housing next door will lower my property value.',
+    fact: 'Most peer-reviewed studies of well-designed, well-managed affordable and missing-middle housing find no consistent negative effect on nearby property values, and some show modest increases tied to added foot traffic and reinvestment nearby.',
+  },
+  {
+    myth: 'A fourplex or townhome row will overwhelm the street with cars.',
+    fact: 'Missing-middle housing typically adds fewer vehicle trips per unit than single-family homes, since residents are more likely to be smaller households, renters without a second car, or people who work nearby. Most projects also include on-site parking sized to realistic demand.',
+  },
+  {
+    myth: 'New housing will look completely out of place and ruin the character of the street.',
+    fact: 'Gentle density is defined by matching the height, setback, and materials of the surrounding block. A duplex or fourplex built to these standards is designed to be nearly indistinguishable from a single-family home at a glance.',
+  },
+  {
+    myth: 'Affordable housing residents are transient and disconnected from the community.',
+    fact: 'Housing stability is one of the biggest predictors of long-term residency. Many affordable and missing-middle developments house long-time neighbors, aging parents, essential workers, and young families trying to stay in the community they grew up in.',
+  },
+  {
+    myth: "There's no way to have input once a project like this is proposed.",
+    fact: 'Most cities require public comment periods, planning commission hearings, and design review before a project is approved. Housingkind exists to make that input more informed, not to skip the process.',
+  },
+  {
+    myth: 'Density always means big apartment towers.',
+    fact: "Missing middle housing sits between single-family homes and large apartment buildings: duplexes, fourplexes, townhomes, and accessory dwelling units, typically 1 to 3 stories, sized to match the block they're on.",
+  },
+]
+
+const glossary = [
+  { term: 'Missing Middle Housing', def: 'A range of house-scale buildings with multiple units — duplexes, fourplexes, townhomes, cottage courts — compatible in scale with single-family homes.' },
+  { term: 'ADU (Accessory Dwelling Unit)', def: 'A smaller, secondary home built on the same lot as a single-family house, often above a garage or in a backyard.' },
+  { term: 'Zoning', def: 'Local rules that determine what can be built where, including building height, use, and the number of homes allowed on a lot.' },
+  { term: 'Upzoning', def: 'A change to zoning rules that allows more homes, height, or density than was previously permitted on a property.' },
+  { term: 'Area Median Income (AMI)', def: 'An income benchmark for a region, used to determine eligibility for income-restricted affordable housing units.' },
+  { term: 'Setback', def: 'The required distance between a building and the property line, lot boundary, or street.' },
+  { term: 'Density', def: 'The number of homes or people per unit of land area, often expressed as units per acre.' },
+  { term: 'Inclusionary Zoning', def: 'A policy requiring or incentivizing developers to include a percentage of income-restricted affordable units in new residential projects.' },
+]
+
+const faqs = [
+  {
+    question: 'What does Housingkind actually do?',
+    answer: 'Housingkind helps residents, developers, and local officials see and understand proposed housing before it is built. We create neighborhood-scale visualizations, collect first-person stories from people living near completed projects, and publish plain-language explanations of housing terms and process.',
+  },
+  {
+    question: 'Is Housingkind for or against new development?',
+    answer: "Neither. We're not here to convince anyone that density is the answer, and we're not a marketing arm for developers. We're here to make sure people understand what's actually being proposed before they decide how they feel about it.",
+  },
+  {
+    question: 'What is "gentle density" or "missing middle" housing?',
+    answer: 'These terms describe small-scale housing types — duplexes, fourplexes, townhomes, and accessory dwelling units (ADUs) — that are similar in height and footprint to single-family homes but add more housing options within the same neighborhood.',
+  },
+  {
+    question: 'How accurate are the visualizations?',
+    answer: "Our visualizations are built from real site dimensions, surrounding building heights, and street context supplied by the partnering developer or planning department. They're reviewed for accuracy before publication, though final built projects may vary slightly from renderings.",
+  },
+  {
+    question: "Can I use Housingkind's visualization tool for my own street?",
+    answer: 'Yes. The "Visualize Your Street" tool lets anyone experiment with different housing types in different street contexts. It is a simplified exploration tool; for a detailed visualization of a specific proposed project, see our partnership services for developers.',
+  },
+  {
+    question: 'How do I share feedback about a specific project near me?',
+    answer: 'Each project listed in Explore Developments includes information about its public comment period and local planning contact when available. You can also reach out through our Contact page and we will help point you in the right direction.',
+  },
+]
+
+const projectsSummary = [
+  { name: 'Oak Street Fourplex', city: 'Portland, OR', status: 'Completed', housingType: 'Fourplex', units: '4 units', description: 'A gentle fourplex that replaced a single aging house, matching the roofline height and setback of neighboring houses. Two units are reserved for households earning below the area median income.' },
+  { name: 'Maple Avenue Mixed-Use', city: 'Seattle, WA', status: 'In Progress', housingType: 'Mixed-Use', units: '8 units', description: 'Ground-floor retail with residential units above, bringing small shopfronts back to a corridor that lost its commercial base decades ago.' },
+  { name: 'Elm Street Townhomes', city: 'Austin, TX', status: 'Completed', housingType: 'Townhomes', units: '5 units', description: 'Five townhomes with individual front doors, using materials chosen to match (not mimic) the houses on either side.' },
+  { name: 'Cedar Lane Duplex', city: 'Denver, CO', status: 'Completed', housingType: 'Duplex', units: '2 units', description: 'A side-by-side duplex that reads as one house from the street, letting a long-time resident downsize into one unit while renting the other.' },
+  { name: 'Birch Court ADUs', city: 'San Diego, CA', status: 'Completed', housingType: 'ADU', units: '3 units', description: 'Three backyard accessory dwelling units that added housing capacity without changing a single sightline from the street.' },
+  { name: 'Pine Street Courtyard Homes', city: 'Minneapolis, MN', status: 'In Progress', housingType: 'Fourplex', units: '4 units', description: 'Four homes arranged around a shared courtyard, giving each household a private entry and a shared green space.' },
+]
 
 function buildSystemPrompt(): string {
   const mythsBlock = mythsAndFacts
