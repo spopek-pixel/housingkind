@@ -42,8 +42,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
-        sans: ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Josefin Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"Josefin Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         xl2: '1.25rem',
