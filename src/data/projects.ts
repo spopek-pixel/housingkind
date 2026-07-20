@@ -10,12 +10,12 @@ export type Project = {
   image: string
 }
 
-import oakStreet from '../assets/images/home_1.png'
-import mapleAvenue from '../assets/images/home_2.png'
-import elmStreet from '../assets/images/home_3.png'
-import cedarLane from '../assets/images/home_4.png'
-import birchCourt from '../assets/images/home_5.png'
-import pineStreet from '../assets/images/home_6.png'
+import oakStreet from '../assets/images/gentle6.png'
+import mapleAvenue from '../assets/images/gentle2.png'
+import elmStreet from '../assets/images/gentle3.png'
+import cedarLane from '../assets/images/gentle4.png'
+import birchCourt from '../assets/images/gentle5.png'
+import pineStreet from '../assets/images/gentle7.png'
 
 export const projects: Project[] = [
   {
