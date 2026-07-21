@@ -1,6 +1,7 @@
 import Button from '../components/ui/Button'
 import Arrow from '../components/ui/Arrow'
 import SectionHeading from '../components/ui/SectionHeading'
+import Reveal from '../components/ui/Reveal'
 import StatCard from '../components/sections/StatCard'
 import StepCard from '../components/sections/StepCard'
 import ProjectCard from '../components/sections/ProjectCard'
@@ -56,26 +57,34 @@ export default function Home() {
             description="Four forces are colliding at once, and most people never see them laid out together."
           />
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard
-              value="4.7M"
-              label="Homes short"
-              description="The U.S. is short an estimated 4.7 million homes where people actually want and need to live."
-            />
-            <StatCard
-              value="10,000/day"
-              label="People turning 65"
-              description="More people want to downsize and stay near family, but the right-sized homes often aren't there."
-            />
-            <StatCard
-              value="1 in 3"
-              label="Renter cost-burdened"
-              description="Roughly a third of renter households spend more than 30% of income on housing."
-            />
-            <StatCard
-              value="72%"
-              label="Support it up close"
-              description="Support for new housing often rises once people can see exactly what's being proposed."
-            />
+            <Reveal delay={0}>
+              <StatCard
+                value="4.7M"
+                label="Homes short"
+                description="The U.S. is short an estimated 4.7 million homes where people actually want and need to live."
+              />
+            </Reveal>
+            <Reveal delay={100}>
+              <StatCard
+                value="10,000/day"
+                label="People turning 65"
+                description="More people want to downsize and stay near family, but the right-sized homes often aren't there."
+              />
+            </Reveal>
+            <Reveal delay={200}>
+              <StatCard
+                value="1 in 3"
+                label="Renter cost-burdened"
+                description="Roughly a third of renter households spend more than 30% of income on housing."
+              />
+            </Reveal>
+            <Reveal delay={300}>
+              <StatCard
+                value="72%"
+                label="Support it up close"
+                description="Support for new housing often rises once people can see exactly what's being proposed."
+              />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -83,7 +92,7 @@ export default function Home() {
       {/* What is gentle density */}
       <section className="container-page pt-16 pb-10 lg:pt-24 lg:pb-14">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="relative order-2 lg:order-1">
+          <Reveal className="relative order-2 lg:order-1">
             <img
               src={neighborsPhoto}
               alt="Neighbors talking and laughing together outdoors"
@@ -98,7 +107,7 @@ export default function Home() {
                 &mdash; A resident, on gentle density in practice
               </p>
             </div>
-          </div>
+          </Reveal>
           <div className="order-1 lg:order-2">
             <p className="eyebrow mb-3">The vocabulary, plainly explained</p>
             <h2 className="text-3xl font-semibold sm:text-4xl">What "gentle density" actually means</h2>
@@ -140,10 +149,18 @@ export default function Home() {
             description="We partner with developers and advocates to create visualizations and stories that reduce fear and support better conversations."
           />
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <StepCard number="01" title="Partner" description="Developers and advocates bring real, proposed projects and site details." />
-            <StepCard number="02" title="Visualize" description="We build clear visuals showing exactly how a project fits into its existing block." />
-            <StepCard number="03" title="Engage" description="Visuals become tools for neighborhood meetings and planning reviews." />
-            <StepCard number="04" title="Document" description="After completion, we return to record how neighbors actually experienced the change." />
+            <Reveal delay={0}>
+              <StepCard number="01" title="Partner" description="Developers and advocates bring real, proposed projects and site details." />
+            </Reveal>
+            <Reveal delay={100}>
+              <StepCard number="02" title="Visualize" description="We build clear visuals showing exactly how a project fits into its existing block." />
+            </Reveal>
+            <Reveal delay={200}>
+              <StepCard number="03" title="Engage" description="Visuals become tools for neighborhood meetings and planning reviews." />
+            </Reveal>
+            <Reveal delay={300}>
+              <StepCard number="04" title="Document" description="After completion, we return to record how neighbors actually experienced the change." />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -162,8 +179,10 @@ export default function Home() {
           </Button>
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <ProjectCard key={p.slug} project={p} />
+          {featured.map((p, i) => (
+            <Reveal key={p.slug} delay={i * 100}>
+              <ProjectCard project={p} />
+            </Reveal>
           ))}
         </div>
       </section>

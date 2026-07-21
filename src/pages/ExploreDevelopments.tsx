@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Button from '../components/ui/Button'
+import Reveal from '../components/ui/Reveal'
 import ProjectCard from '../components/sections/ProjectCard'
 import { projects } from '../data/projects'
 import heroBackground from '../assets/images/business_construction.jpg'
@@ -89,8 +90,10 @@ export default function ExploreDevelopments() {
           Showing {filtered.length} project{filtered.length === 1 ? '' : 's'}
         </p>
         <div className="mt-4 grid gap-6 pb-20 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p) => (
-            <ProjectCard key={p.slug} project={p} />
+          {filtered.map((p, i) => (
+            <Reveal key={p.slug} delay={(i % 3) * 100}>
+              <ProjectCard project={p} />
+            </Reveal>
           ))}
         </div>
         {filtered.length === 0 && (
